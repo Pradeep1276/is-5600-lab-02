@@ -1,54 +1,45 @@
 /* add your code here */
-/**
- * Displays the stock information for a selected symbol
- * @param {string} symbol 
- * @param {Array} stocks 
- */
-function viewStock(symbol, stocks) {
-    // Find the stock data for the given symbol
-    const stock = stocks.find(s => s.symbol === symbol);
-  
-    // Ensure the stock exists before proceeding
-    if (stock) {
-      // Populate stock information into the appropriate elements
-      document.querySelector('#stock-name').innerText = stock.name;
-      document.querySelector('#stock-symbol').innerText = stock.symbol;
-      document.querySelector('#stock-sector').innerText = stock.sector;
-      document.querySelector('#stock-price').innerText = `$${stock.price.toFixed(2)}`;
-    }
+// delete 
+actionEl.innerText = "Delete";
+actionEl.classList.add("delete-btn");
+
+// Find the full stock details from the stocks data
+const stockDetails = stocks.find((stock) => stock.symbol === symbol);
+
+// Create a container for the stock info
+const stockContainer = document.createElement("div");
+stockContainer.classList.add("portfolio-item");
+
+// Display stock name and price if details are found
+if (stockDetails) {
+  const stockName = document.createElement("p");
+  const stockPrice = document.createElement("p");
+  stockName.innerText = stockDetails.name;
+  stockPrice.innerText = `Price: $${stockDetails.price}`;
+  stockContainer.appendChild(stockName);
+  stockContainer.appendChild(stockPrice);
+}
+
+// Append symbol, shares, and delete action to the container
+stockContainer.appendChild(symbolEl);
+stockContainer.appendChild(sharesEl);
+stockContainer.appendChild(actionEl);
+
+// Add delete event listener to the button
+actionEl.addEventListener("click", () => {
+  const index = portfolio.findIndex((item) => item.symbol === symbol);
+  if (index > -1) {
+    portfolio.splice(index, 1);
+    renderPortfolio(user, stocks);
   }
-  /**
- * Renders the portfolio items for the user
- * @param {*} user 
- * @param {Array} stocks 
- */
-function renderPortfolio(user, stocks) {
-    const { portfolio } = user;
-    const portfolioDetails = document.querySelector('.portfolio-list');
-  
-    // Clear previous portfolio
-    portfolioDetails.innerHTML = '';
-  
-    // Map over portfolio items and render them
-    portfolio.map(({ symbol, owned }) => {
-      // Create elements for stock symbol, shares, and view button
-      const symbolEl = document.createElement('p');
-      const sharesEl = document.createElement('p');
-      const actionEl = document.createElement('button');
-  
-      symbolEl.innerText = `Symbol: ${symbol}`;
-      sharesEl.innerText = `Shares Owned: ${owned}`;
-      actionEl.innerText = 'View';
-      actionEl.setAttribute('id', symbol);
-      actionEl.classList.add('view-button');
-  
-      // Append elements to portfolio list
-      portfolioDetails.appendChild(symbolEl);
-      portfolioDetails.appendChild(sharesEl);
-      portfolioDetails.appendChild(actionEl);
-  
-      // Attach event listener to the view button
-      actionEl.addEventListener('click', () => viewStock(symbol, stocks));
-    });
+});
+
+portfolioDetails.appendChild(stockContainer);
+;
+function handleUserListClick(event, users, stocks) {
+    const userId = event.target.id;
+    const user = users.find((user) => user.id == userId);
+    populateForm(user);
+    renderPortfolio(user, stocks);
   }
   
